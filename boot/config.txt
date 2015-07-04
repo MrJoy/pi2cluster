@@ -62,8 +62,8 @@ gpu_mem=16
 max_usb_current=1
 
 # Make use of the LEDs for something useful.
-pwr_led_trigger=none
-act_led_trigger=none
+#pwr_led_trigger=none
+#act_led_trigger=none
 
 
 
