@@ -88,7 +88,10 @@ echo "INFO: Signaling sshd to pick up changes."
 sudo pkill --signal HUP sshd
 
 # TODO: Set up locale/keyboard, time zone, etc.
-echo "INFO: Updating OS."
-sudo snappy update ubuntu-core
-
-# TODO: Remove unneeded packages.  Add desired packages.
+echo "INFO: Updating OS, adding/removing packages."
+sudo snappy update ubuntu-core pi2
+for PACKAGE in docker; do
+  sudo snappy install $PACKAGE
+done
+sudo snappy remove webdm
+sudo snappy purge webdm
