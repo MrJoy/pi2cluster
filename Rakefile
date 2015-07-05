@@ -29,6 +29,7 @@ namespace :ubuntu do
     rescue StandardError
       # dd returns a non-zero status code!  Ew!
     end
+    sleep 10
   end
 end
 
