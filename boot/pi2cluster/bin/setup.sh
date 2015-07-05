@@ -32,7 +32,7 @@ GROUP=$(printf "%02d" $GROUP)
 UNIT=$(printf "%02d" $UNIT)
 NEW_HOSTNAME="pi2g${GROUP}u${UNIT}.local"
 echo "INFO: Setting hostname to '${NEW_HOSTNAME}'."
-cat /etc/hosts | perl -pse "s/^(127\.0\.0\.1.*?)$/\1\t${NEW_HOSTNAME}/sm" > /tmp/hosts
+cat /etc/hosts | perl -pse "s/^(127\.0\.0\.1\s+)(.*?)$/\1${NEW_HOSTNAME}\t\2/sm" > /tmp/hosts
 sudo sh -c "cat /tmp/hosts > /etc/hosts"
 sudo hostname ${NEW_HOSTNAME}
 
