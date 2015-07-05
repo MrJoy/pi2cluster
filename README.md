@@ -32,3 +32,7 @@ sudo reboot now
 ```
 
 You should be able to reach the host at: `pi2g<group>u<unit>.local` (0-padding each value to 2 digits!), e.g. `pi2g01u01.local` once it reboots.
+
+You should also be able to SSH in without a password (just with your SSH key and passphrase) as `ubuntu`, and have password-less `sudo` access.
+
+Automate away from here.
