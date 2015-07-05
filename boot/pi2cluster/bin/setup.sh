@@ -61,6 +61,12 @@ mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 cp -f $BASE_DIR/config/authorized_keys $AK_FILE
 chmod 600 $AK_FILE
+cat /etc/ssh/sshd_config |
+  perl -pse 's/(#\s*)?(PermitRootLogin)(.*?)$/\2 no/' |
+  perl -pse 's/(#\s*)?(PasswordAuthentication)(.*?)$/\2 no/' |
+  perl -pse 's/(#\s*)?(RSAAuthentication)(.*?)$/\2 yes/' |
+  perl -pse 's/(#\s*)?(PubkeyAuthentication)(.*?)$/\2 yes/' > /tmp/sshd_config
+sudo sh -c "cat /tmp/sshd_config > /etc/ssh/sshd_config"
 
 
 echo "INFO: Ensuring sshd configuration is robust."
