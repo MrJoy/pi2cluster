@@ -57,7 +57,12 @@ dtparam=spi=off
 
 # Reduce GPU memory as much as possible to make it available to the rest of the
 # system.
-gpu_mem=16
+#
+# Values known to work:
+# NOOBS 1.4.1:              16
+# Snappy Core Ubuntu 15.04: 32
+# Raspbian Wheezy:          ?
+gpu_mem=32
 
 # Provide enough power for bus-powered USB spindles.
 max_usb_current=1
