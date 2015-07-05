@@ -1,11 +1,5 @@
-diskutil list | grep DOS_FAT_32 | awk '{ print $4 $5 " " $6 }'
+diskutil list | grep _FAT_32 | awk '{ print $4 $5 " " $6 }'
 
-diskutil partitionDisk /dev/disk2 1 MBR MS-DOS PI2CLUSTER 100%
-
-
-sudo dd if=2015-05-05-raspbian-wheezy.img bs=16m of=/dev/rdisk2
-# or...
-cp -rfp image/NOOBS_v1_4_1/* /Volumes/PI2CLUSTER/
 
 ----
 
