@@ -1,0 +1,17 @@
+# map rpi u-boot vars to snappy-system ones
+# where to load initrd, fdt
+#initrd_addr=$ramdisk_addr_r
+#fdtaddr=$fdt_addr_r
+initrd_addr=0x02100000
+fdtaddr=0x02000000
+# mmc device, part
+# XXX; need to hook this some other place to get access to this
+mmcdev=0
+mmcpart=1
+# mmcargs
+mmcrootfstype=ext4
+mmcargs=setenv bootargs "console=tty0 console=ttyAMA0 root=${mmcroot}"
+
+# load Snappy environment and call into Snappy boot after processing this file
+uenvcmd=load ${devtype} ${mmcdev}:${mmcpart} ${loadaddr} snappy-system.txt; env import -t ${loadaddr} ${filesize}; run snappy_boot
+
