@@ -72,7 +72,7 @@ max_usb_current=1
 #act_led_trigger=none
 
 
-
+# DISABLE THE FOLLOWING FOR DEBUGGING:
 boot_delay=0
 avoid_safe_mode=1
 disable_splash=1
