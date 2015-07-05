@@ -30,23 +30,25 @@ fi
 # TODO: What's the graceful/proper way to set the damn hostname?
 GROUP=$(printf "%02d" $GROUP)
 UNIT=$(printf "%02d" $UNIT)
-NEW_HOSTNAME="pi2g${GROUP}u${UNIT}"
-echo "INFO: Setting hostname to ${NEW_HOSTNAME}."
-sudo hostname $NEW_HOSTNAME
+NEW_HOSTNAME="pi2g${GROUP}u${UNIT}.local"
+echo "INFO: Setting hostname to '${NEW_HOSTNAME}'."
+cat /etc/hosts | perl -pse "s/^(127\.0\.0\.1.*?)$/\1\t${NEW_HOSTNAME}/sm" > /tmp/hosts
+sudo sh -c "cat /tmp/hosts > /etc/hosts"
+sudo hostname ${NEW_HOSTNAME}
 
 
 # TODO: Don't format if it's already formatted.
 # TODO: Don't mount if it's already mounted / set up in `/etc/mtab`.
-echo "INFO: Setting up ${MOUNT_DEVICE} with an ext4 volume, and mounting it to ${MOUNT_TARGET}"
 MOUNT_DEVICE=/dev/sda1
 MOUNT_TARGET=/mnt/external/
+echo "INFO: Setting up ${MOUNT_DEVICE} with an ext4 volume, and mounting it to ${MOUNT_TARGET}"
 if [ ! -d $MOUNT_TARGET ]; then
   sudo mkdir -p $MOUNT_TARGET
-
+fi
+if ! sudo mount $MOUNT_DEVICE $MOUNT_TARGET; then
   sudo mkfs.ext4 $MOUNT_DEVICE
-  sudo mount $MOUNT_DEVICE $MOUNT_TARGET
 else
-  echo "INFO: Looks like ${MOUNT_TARGET} already exists.  Assuming setup went well and skipping FS setup."
+  echo "INFO: Looks like ${MOUNT_TARGET} already set up.  Assuming setup went well and skipping FS setup."
 fi
 
 
