@@ -15,8 +15,9 @@ BASE_DIR=$(
 # TODO: anyone to get onto the box while it's running.  We should turn `sshd`
 # TODO: off at startup as a *minimum*.
 
-GROUP=$1
-UNIT=$2
+GROUP=${1:-}
+UNIT=${2:-}
+ERROR=0
 if [ "$GROUP" == "" ]; then ERROR=1; fi
 if [ "$UNIT" == "" ]; then ERROR=1; fi
 if [ "$ERROR" == "1" ]; then
@@ -24,20 +25,14 @@ if [ "$ERROR" == "1" ]; then
   exit 1
 fi
 
-echo "INFO: Setting hostname to ${NEW_HOSTNAME}."
 # TODO: Maybe ping the network to ensure this is unique?
 #
 # TODO: What's the graceful/proper way to set the damn hostname?
 GROUP=$(printf "%02d" $GROUP)
 UNIT=$(printf "%02d" $UNIT)
 NEW_HOSTNAME="pi2g${GROUP}u${UNIT}"
-echo $NEW_HOSTNAME > /tmp/hostname
-sudo mv -f /tmp/hostname /etc/hostname
-(
-  cat /etc/hosts
-  echo "127.0.1.1       ${NEW_HOSTNAME}"
-) > /tmp/hosts
-sudo mv -f /tmp/hosts /etc/hosts
+echo "INFO: Setting hostname to ${NEW_HOSTNAME}."
+sudo hostname $NEW_HOSTNAME
 
 
 # TODO: Don't format if it's already formatted.
