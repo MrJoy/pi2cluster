@@ -73,6 +73,6 @@ max_usb_current=1
 
 
 
-boot_delay=0
-avoid_safe_mode=1
-disable_splash=1
+#boot_delay=0
+#avoid_safe_mode=1
+#disable_splash=1
