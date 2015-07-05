@@ -38,27 +38,22 @@ sudo hostname ${NEW_HOSTNAME}
 
 
 # TODO: Don't format if it's already formatted.
-# TODO: Don't mount if it's already mounted / set up in `/etc/mtab`.
+# TODO: Template the service file so this stays in sync...
 MOUNT_DEVICE=/dev/sda1
 MOUNT_TARGET=/mnt/external/
 echo "INFO: Setting up ${MOUNT_DEVICE} with an ext4 volume, and mounting it to ${MOUNT_TARGET}"
-if [ ! -d $MOUNT_TARGET ]; then
-  sudo mkdir -p $MOUNT_TARGET
-fi
-if [ $(grep ${MOUNT_DEVICE} /etc/fstab | wc -l) == 0 ]; then
-  sudo sh -c "echo ${MOUNT_DEVICE} ${MOUNT_TARGET} ext4 rw,relatime,data=ordered,journal=ordered 0 0 >> /etc/fstab"
-fi
-if ! sudo mount $MOUNT_DEVICE $MOUNT_TARGET; then
-  sudo mkfs.ext4 $MOUNT_DEVICE
-else
-  echo "INFO: Looks like ${MOUNT_TARGET} already set up.  Assuming setup went well and skipping FS setup."
-fi
 if [ ! -e /etc/systemd/system/mnt-external.mount ]; then
   sudo cp -f $BASE_DIR/config/snappy-15.04/mnt-external.mount /etc/systemd/system/mnt-external.mount
   sudo chmod 644 /etc/systemd/system/mnt-external.mount
   sudo systemctl enable mnt-external.mount
   sudo systemctl daemon-reload
+fi
+
+if ! sudo systemctl start mnt-external.mount; then
+  sudo mkfs.ext4 $MOUNT_DEVICE
   sudo systemctl start mnt-external.mount
+else
+  echo "INFO: Looks like ${MOUNT_TARGET} already set up.  Assuming setup went well and skipping FS setup."
 fi
 
 echo "INFO: Ensuring SSH configuration is reasonable and has only the key included with us."
