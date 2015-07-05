@@ -64,7 +64,7 @@ chmod 600 $AK_FILE
 
 
 echo "INFO: Ensuring sshd configuration is robust."
-sudo cp -f $BASE_DIR/config/sshd_config /etc/ssh/sshd_config
+# sudo cp -f $BASE_DIR/config/sshd_config /etc/ssh/sshd_config
 # TODO: rm /etc/ssh/ssh_host_* && dpkg-reconfigure openssh-server
 
 
