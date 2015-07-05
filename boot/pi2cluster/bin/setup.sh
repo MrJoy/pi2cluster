@@ -53,7 +53,13 @@ if ! sudo mount $MOUNT_DEVICE $MOUNT_TARGET; then
 else
   echo "INFO: Looks like ${MOUNT_TARGET} already set up.  Assuming setup went well and skipping FS setup."
 fi
-
+if [ ! -e /etc/systemd/system/mnt-external.mount ]; then
+  sudo cp -f $BASE_DIR/config/snappy-15.04/mnt-external.mount /etc/systemd/system/mnt-external.mount
+  sudo chmod 644 /etc/systemd/system/mnt-external.mount
+  sudo systemctl enable mnt-external.mount
+  sudo systemctl daemon-reload
+  sudo systemctl start mnt-external.mount
+fi
 
 echo "INFO: Ensuring SSH configuration is reasonable and has only the key included with us."
 AK_FILE=~/.ssh/authorized_keys
