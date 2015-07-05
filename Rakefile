@@ -19,8 +19,20 @@ task :ensure_ubuntu do
     "  Expected to find `/Volumes/system-boot`."
 end
 
+COPY_SIZE="16m"
+namespace :ubuntu do
+  desc "Write the Snappy Core Ubuntu image to DEVICE.  Requires `sudo`!"
+  task :init do
+    device = ENV.fetch("DEVICE")
+    begin
+      sh "time sudo dd if=image/snappy-15.04/ubuntu-15.04-snappy-armhf-rpi2.img of=#{device} bs=#{COPY_SIZE}"
+    rescue StandardError
+      # dd returns a non-zero status code!  Ew!
+    end
+  end
+end
 
-namespace :sd do
+namespace :noobs do
   desc "Reformat the SD card specified via DEVICE, and prepare it for `init`."
   task :format do
     device = ENV.fetch("DEVICE")
@@ -31,7 +43,10 @@ namespace :sd do
   task init: [:ensure_bare] do
     cp_r FileList["image/current/*"], "/Volumes/PI2CLUSTER/"
   end
+end
 
+
+namespace :sd do
   desc "Remove cruft from SD card."
   task clean: [:ensure_ubuntu] do
     rm_f FileList["#{DEST_DIR}/.fseventsd"]
@@ -55,5 +70,14 @@ namespace :sd do
   task eject: [:ensure_ubuntu, :'sd:clean'] do
     sh "diskutil eject #{DEST_DIR}"
   end
-end
 
+  desc "Unmount, but do not eject, the SD card."
+  task :unmount do
+    options = FileList["/Volumes/system-boot",
+                       "/Volumes/boot",
+                       "/Volumes/PI2CLUSTER"]
+    target  = options.find { |path| Dir.exist?(path) }
+    next unless target
+    sh "diskutil unmountDisk #{target}"
+  end
+end
