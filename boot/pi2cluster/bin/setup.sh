@@ -87,5 +87,7 @@ echo "INFO: Signaling sshd to pick up changes."
 sudo pkill --signal HUP sshd
 
 # TODO: Set up locale/keyboard, time zone, etc.
+echo "INFO: Updating OS."
+sudo snappy update ubuntu-core
 
 # TODO: Remove unneeded packages.  Add desired packages.
