@@ -64,7 +64,7 @@ chmod 600 $AK_FILE
 
 
 echo "INFO: Ensuring sshd configuration is robust."
-# sudo cp -f $BASE_DIR/config/sshd_config /etc/ssh/sshd_config
+# sudo cp -f $BASE_DIR/config/raspbian/sshd_config /etc/ssh/sshd_config
 # TODO: rm /etc/ssh/ssh_host_* && dpkg-reconfigure openssh-server
 
 
@@ -72,7 +72,7 @@ echo "INFO: Coercing password for pi user to predetermined value."
 # TODO: Filter/replace for just `pi` user.
 #
 # TODO: Perhaps just set up a random string?
-# sudo cp -f $BASE_DIR/config/{group,gshadow,passwd,shadow} /etc/
+# sudo cp -f $BASE_DIR/config/raspbian/{group,gshadow,passwd,shadow} /etc/
 # sudo chmod 600 /etc/{gshadow,shadow}
 # sudo chmod 644 /etc/{group,passwd}
 
