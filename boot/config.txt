@@ -1,4 +1,5 @@
 # Based on file included with NOOBS 1.4.1
+kernel=uboot.bin
 
 # For more options and information see
 # http://www.raspberrypi.org/documentation/configuration/config-txt.md

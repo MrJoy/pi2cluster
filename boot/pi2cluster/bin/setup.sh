@@ -72,13 +72,13 @@ echo "INFO: Coercing password for pi user to predetermined value."
 # TODO: Filter/replace for just `pi` user.
 #
 # TODO: Perhaps just set up a random string?
-sudo cp -f $BASE_DIR/config/{group,gshadow,passwd,shadow} /etc/
-sudo chmod 600 /etc/{gshadow,shadow}
-sudo chmod 644 /etc/{group,passwd}
+# sudo cp -f $BASE_DIR/config/{group,gshadow,passwd,shadow} /etc/
+# sudo chmod 600 /etc/{gshadow,shadow}
+# sudo chmod 644 /etc/{group,passwd}
 
 
-echo "INFO: Signaling sshd to pick up changes."
-sudo killall -HUP sshd
+# echo "INFO: Signaling sshd to pick up changes."
+# sudo killall -HUP sshd
 
 # TODO: Set up locale/keyboard, time zone, etc.
 
