@@ -45,6 +45,9 @@ echo "INFO: Setting up ${MOUNT_DEVICE} with an ext4 volume, and mounting it to $
 if [ ! -d $MOUNT_TARGET ]; then
   sudo mkdir -p $MOUNT_TARGET
 fi
+if [ $(grep ${MOUNT_DEVICE} /etc/fstab | wc -l) == 0 ]; then
+  sudo sh -c "echo ${MOUNT_DEVICE} ${MOUNT_TARGET} ext4 rw,relatime,data=ordered,journal=ordered 0 0 >> /etc/fstab"
+fi
 if ! sudo mount $MOUNT_DEVICE $MOUNT_TARGET; then
   sudo mkfs.ext4 $MOUNT_DEVICE
 else
