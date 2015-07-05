@@ -11,7 +11,8 @@ The external drive will be formatted as `ext4` if not already formatted to it, a
 
 ## Setup
 
-1. Download the Snappy Core Ubuntu 15.04 image for Raspberry Pi into `image/snappy-15.04`.
+1. Download the [Snappy Core Ubuntu 15.04 image](http://people.canonical.com/~platform/snappy/raspberrypi2/ubuntu-15.04-snappy-armhf-rpi2.img.xz) for Raspberry Pi, run it through `unxz`, and put it into `image/snappy-15.04`.
+    * `brew install unxz`
 2. Edit `boot/pi2cluster/authorized_keys` to have your preferred SSH public key.
 3. Edit `boot/pi2cluster/config.txt` to disable the block at the end marked as disable-for-debugging, and to adjust any relevant video settings.
 
