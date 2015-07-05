@@ -1,0 +1,15 @@
+[Unit]
+Description=External Storage
+DefaultDependencies=no
+Conflicts=umount.target
+Before=local-fs.target umount.target
+
+[Mount]
+What=/dev/sda1
+Where=/mnt/external
+DirectoryMode=0777
+Type=ext4
+Options=relatime,data=ordered
+
+[Install]
+WantedBy=multi-user.target
