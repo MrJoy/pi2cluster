@@ -83,8 +83,8 @@ echo "INFO: Coercing password for pi user to predetermined value."
 # sudo chmod 644 /etc/{group,passwd}
 
 
-# echo "INFO: Signaling sshd to pick up changes."
-# sudo killall -HUP sshd
+echo "INFO: Signaling sshd to pick up changes."
+sudo pkill --signal HUP sshd
 
 # TODO: Set up locale/keyboard, time zone, etc.
 
