@@ -11,7 +11,7 @@ mmcpart=1
 # mmcargs
 mmcrootfstype=ext4
 # TODO: Is this where we should put our cloud-init hooks? snappy_cmdline is run before this...
-mmcargs=setenv bootargs "console=tty0 console=ttyAMA0 root=${mmcroot}"
+mmcargs=setenv bootargs "console=tty0 console=ttyAMA0 root=${mmcroot} h=pi2g01u01.local"
 
 # load Snappy environment and call into Snappy boot after processing this file
 uenvcmd=load ${devtype} ${mmcdev}:${mmcpart} ${loadaddr} snappy-system.txt; env import -t ${loadaddr} ${filesize}; run snappy_boot
