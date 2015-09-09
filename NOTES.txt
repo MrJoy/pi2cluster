@@ -1,5 +1,10 @@
 diskutil list | grep _FAT_32 | awk '{ print $4 $5 " " $6 }'
 
+https://gist.github.com/moderation/9ccee6b32a2d44d0391e
+http://humdi.net/vnstat/
+https://code.facebook.com/posts/938595492830104/osquery-introducing-query-packs/?utm_source=codedot_rss_feed&utm_medium=rss&utm_campaign=RSS+Feed
+http://lollyrock.com/articles/kubernetes-vagrant/
+http://thenewstack.io/make-a-restful-json-api-go/
 
 ----
 

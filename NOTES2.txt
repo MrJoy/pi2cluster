@@ -1,0 +1,20 @@
+https://registry.hub.docker.com/u/armbuild/debian/
+https://registry.hub.docker.com/u/dcarley/golang-rpi/
+https://registry.hub.docker.com/u/resin/rpi-raspbian/
+
+
+http://sc5.io/posts/a-private-raspberry-pi-cloud-with-arm-docker
+http://archlinuxarm.org/platforms/armv6/raspberry-pi
+
+
+mkfs.vfat /dev/sdX1
+mkdir boot
+mount /dev/sdX1 boot
+mkfs.ext4 /dev/sdX2
+mkdir root
+mount /dev/sdX2 root
+wget http://archlinuxarm.org/os/ArchLinuxARM-rpi-2-latest.tar.gz
+bsdtar -xpf ArchLinuxARM-rpi-2-latest.tar.gz -C root
+sync
+mv root/boot/* boot
+umount boot root
