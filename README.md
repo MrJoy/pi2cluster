@@ -8,6 +8,8 @@ It is assumed that the Pi will have an external HD attached via USB, will not be
 
 The external drive will be formatted as `ext4` if not already formatted to it, and set to mount to `/mnt/external` automatically.
 
+Over time this will expand and generalize to support other devices, other OSs, and other configurations as my own dabbling expands.
+
 
 ## Setup
 
