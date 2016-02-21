@@ -1,3 +1,7 @@
+POSSIBLE_MOUNTS = ["/Volumes/system-boot",
+                   "/Volumes/boot",
+                   "/Volumes/EXTRASPACE",
+                   "/Volumes/PI2CLUSTER"]
 def device(fallback)
   disk_info = JSON.load(`diskutil list -plist | plutil -convert json -r - -o -`)
 
@@ -10,24 +14,11 @@ def device(fallback)
   return "/dev/r#{device}"
 end
 
-# task :ensure_bare do
-#   next if Dir.exist?("/Volumes/PI2CLUSTER")
-#   fail "SD card must be set up and mounted properly."\
-#     "  Expected to find `/Volumes/PI2CLUSTER`."
-# end
-
-# task :ensure_raspbian do
-#   DEST_DIR="/Volumes/boot"
-#   next if Dir.exist?(DEST_DIR)
-#   fail "SD card must be set up and mounted properly."\
-#     "  Expected to find `#{DEST_DIR}`."
-# end
-
-task :ensure_ubuntu do
-  DEST_DIR="/Volumes/system-boot"
-  next if Dir.exist?("/Volumes/system-boot")
+task :ensure_device do
+  mount_point = POSSIBLE_MOUNTS.find { |name| Dir.exist?(name) }
   fail "SD card must be set up and mounted properly."\
-    "  Expected to find `/Volumes/system-boot`."
+    "  Expected to find something from POSSIBLE_MOUNTS list." unless mount_point
+  DEST_DIR=mount_point
 end
 
 COPY_SIZE="16m"
@@ -60,7 +51,8 @@ end
 
 namespace :sd do
   desc "Remove cruft from SD card."
-  task clean: [:ensure_ubuntu] do
+  task clean: [:ensure_device] do
+    sh "mdutil -i off #{DEST_DIR}"
     rm_f FileList["#{DEST_DIR}/.fseventsd"]
     rm_f FileList["#{DEST_DIR}/.Spotlight*"]
     rm_f FileList["#{DEST_DIR}/.Trash"]
@@ -68,28 +60,25 @@ namespace :sd do
   end
 
   desc "Remove setup files and other cruft from SD card."
-  task remove: [:ensure_ubuntu, :clean] do
+  task remove: [:ensure_device] do
     rm_f FileList["#{DEST_DIR}/pi2cluster/**/*"]
   end
 
   desc "Copy setup files to boot volume of SD card."
-  task copy: [:ensure_ubuntu, :remove] do
+  task copy: [:ensure_device, :remove] do
     sh "cp image/snappy-15.04/uEnv.txt #{DEST_DIR}/"
     mkdir_p "#{DEST_DIR}/pi2cluster"
     cp_r FileList["boot/*"], "#{DEST_DIR}/"
   end
 
   desc "Eject the SD card."
-  task eject: [:ensure_ubuntu, :clean] do
+  task eject: [:ensure_device, :clean] do
     sh "diskutil eject #{DEST_DIR}"
   end
 
   desc "Unmount, but do not eject, the SD card."
   task :unmount do
-    options = FileList["/Volumes/system-boot",
-                       "/Volumes/boot",
-                       "/Volumes/PI2CLUSTER"]
-    target  = options.find { |path| Dir.exist?(path) }
+    target  = POSSIBLE_MOUNTS.find { |path| Dir.exist?(path) }
     next unless target
     sh "diskutil unmountDisk #{target}"
   end
