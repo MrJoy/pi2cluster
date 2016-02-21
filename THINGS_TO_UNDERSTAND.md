@@ -4,8 +4,14 @@
 
 * http://www.unixmen.com/snappy-ubuntu-core-an-entirely-new-ubuntu-operating-system-for-clouds-and-devices/
 * http://people.canonical.com/~lool/rpi2/README.txt
+* https://developer.ubuntu.com/en/snappy/start/using-snappy/
+* https://developer.ubuntu.com/en/snappy/start/webdm/
 * `FUSE Control Filesystem`
 * `FUSE Configuration File System`
+
+## Docker Ecosystem wrt Snappy
+
+* https://github.com/nimblestratus/snappy-swarm
 
 ## `cloud-init`
 
