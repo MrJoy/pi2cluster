@@ -26,7 +26,12 @@ Over time this will expand and generalize to support other devices, other OSs, a
 # WARNING: was assigned to, and use that!  The `r` in the name is for `raw`,
 # WARNING: and is generally REALLY important for getting decent write
 # WARNING: throughput here.
-rake sd:unmount ubuntu:init sd:copy sd:eject DEVICE=/dev/rdisk2; say 'Done!'
+#
+# Also note that you'll be prompted for your password as `sudo` is used here!
+time rake sd:unmount ubuntu:init sd:copy sd:eject DEVICE=/dev/rdisk2; say 'Done!'
+
+# If you're iterating on the setup scripts / boot process and you have an imaged MMC card at hand:
+rake sd:copy sd:eject DEVICE=/dev/rdisk2
 ```
 
 Then, boot up a Pi with the relevant MMC card, log in as `ubuntu` (password: `ubuntu`), and run the following:
