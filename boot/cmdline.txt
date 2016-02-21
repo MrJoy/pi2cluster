@@ -1,1 +1,1 @@
-elevator=deadline ds=nocloud;h=pi2g01u01;i=pi2g01u01 ubuntu-pass=ubuntu
+elevator=deadline ubuntu-pass=pink
