@@ -2,6 +2,8 @@
 
 ## Ubuntu Snappy
 
+* http://www.unixmen.com/snappy-ubuntu-core-an-entirely-new-ubuntu-operating-system-for-clouds-and-devices/
+* http://people.canonical.com/~lool/rpi2/README.txt
 * `FUSE Control Filesystem`
 * `FUSE Configuration File System`
 
