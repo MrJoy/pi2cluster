@@ -1,53 +1,43 @@
+COPY_SIZE       = "16m"
 POSSIBLE_MOUNTS = ["/Volumes/system-boot",
                    "/Volumes/boot",
                    "/Volumes/EXTRASPACE",
                    "/Volumes/PI2CLUSTER"]
-def device(fallback)
-  disk_info = JSON.load(`diskutil list -plist | plutil -convert json -r - -o -`)
 
-  device    = disk_info["AllDisksAndPartitions"]
-              .select { |disk| disk["Content"] == "FDisk_partition_scheme" }
-              .select { |disk| disk["Partitions"] .find { |part| part["Content"] == "Windows_FAT_32"} }
-              .first["DeviceIdentifier"]
-  device    = fallback unless device =~ /\Adisk\d+\z/
-  fail "Couldn't find mounted MMC device!" unless device
-  return "/dev/r#{device}"
-end
+# def device(fallback)
+#   disk_info = JSON.load(`diskutil list -plist | plutil -convert json -r - -o -`)
+
+#   device    = disk_info["AllDisksAndPartitions"]
+#               .select { |disk| disk["Content"] == "FDisk_partition_scheme" }
+#               .select { |disk| disk["Partitions"] .find { |part| part["Content"] == "Windows_FAT_32"} }
+#               .first["DeviceIdentifier"]
+#   device    = fallback unless device =~ /\Adisk\d+\z/
+#   fail "Couldn't find mounted MMC device!" unless device
+#   return "/dev/r#{device}"
+# end
 
 task :ensure_device do
   mount_point = POSSIBLE_MOUNTS.find { |name| Dir.exist?(name) }
-  fail "SD card must be set up and mounted properly."\
+  fail "SD card must be set up and mounted properly." \
     "  Expected to find something from POSSIBLE_MOUNTS list." unless mount_point
   DEST_DIR=mount_point
 end
 
-COPY_SIZE="16m"
 namespace :ubuntu do
   desc "Write the Snappy Core Ubuntu image to DEVICE (/dev/rdiskX).  Requires `sudo`!"
   task :init do
     device = ENV.fetch("DEVICE")
+    ASSET_DIR = "image/snappy-15.04"
     begin
-      sh "time sudo dd if=image/snappy-15.04/ubuntu-15.04-snappy-armhf-rpi2.img of=#{device} bs=#{COPY_SIZE}"
+      sh "time sudo dd if=#{ASSET_DIR}/ubuntu-15.04-snappy-armhf-raspi2.img of=#{device} bs=#{COPY_SIZE}"
     rescue StandardError
-      # dd returns a non-zero status code!  Ew!
+      # dd returns a non-zero status code after giving a message like the one that follows!  Despite
+      # this, all seems to work fine.  Ew!
+      #   dd: /dev/rdisk4: Invalid argument
     end
     sleep 10
   end
 end
-
-# namespace :noobs do
-#   desc "Reformat the SD card specified via DEVICE (/dev/rdiskX), and prepare it for `init`."
-#   task :format do
-#     device = ENV.fetch("DEVICE")
-#     sh "diskutil partitionDisk #{device} 1 MBR MS-DOS PI2CLUSTER 100%"
-#   end
-
-#   desc "Initialize a bare SD card with NOOBS."
-#   task init: [:ensure_bare] do
-#     cp_r FileList["image/current/*"], "/Volumes/PI2CLUSTER/"
-#   end
-# end
-
 
 namespace :sd do
   desc "Remove cruft from SD card."
@@ -66,7 +56,7 @@ namespace :sd do
 
   desc "Copy setup files to boot volume of SD card."
   task copy: [:ensure_device, :remove] do
-    sh "cp image/snappy-15.04/uEnv.txt #{DEST_DIR}/"
+    sh "cp #{ASSET_DIR}/uEnv.txt #{DEST_DIR}/"
     mkdir_p "#{DEST_DIR}/pi2cluster"
     cp_r FileList["boot/*"], "#{DEST_DIR}/"
   end
@@ -76,10 +66,8 @@ namespace :sd do
     sh "diskutil eject #{DEST_DIR}"
   end
 
-  desc "Unmount, but do not eject, the SD card."
+  desc "Unmount, but do not eject, the SD card specified by DEVICE (/dev/rdiskX)."
   task :unmount do
-    target  = POSSIBLE_MOUNTS.find { |path| Dir.exist?(path) }
-    next unless target
-    sh "diskutil unmountDisk #{target}"
+    sh "diskutil unmountDisk #{ENV.fetch("DEVICE")}"
   end
 end
