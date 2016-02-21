@@ -21,7 +21,7 @@ end
 
 COPY_SIZE="16m"
 namespace :ubuntu do
-  desc "Write the Snappy Core Ubuntu image to DEVICE.  Requires `sudo`!"
+  desc "Write the Snappy Core Ubuntu image to DEVICE (/dev/rdiskX).  Requires `sudo`!"
   task :init do
     device = ENV.fetch("DEVICE")
     begin
@@ -33,18 +33,18 @@ namespace :ubuntu do
   end
 end
 
-namespace :noobs do
-  desc "Reformat the SD card specified via DEVICE, and prepare it for `init`."
-  task :format do
-    device = ENV.fetch("DEVICE")
-    sh "diskutil partitionDisk #{device} 1 MBR MS-DOS PI2CLUSTER 100%"
-  end
+# namespace :noobs do
+#   desc "Reformat the SD card specified via DEVICE (/dev/rdiskX), and prepare it for `init`."
+#   task :format do
+#     device = ENV.fetch("DEVICE")
+#     sh "diskutil partitionDisk #{device} 1 MBR MS-DOS PI2CLUSTER 100%"
+#   end
 
-  desc "Initialize a bare SD card with NOOBS."
-  task init: [:ensure_bare] do
-    cp_r FileList["image/current/*"], "/Volumes/PI2CLUSTER/"
-  end
-end
+#   desc "Initialize a bare SD card with NOOBS."
+#   task init: [:ensure_bare] do
+#     cp_r FileList["image/current/*"], "/Volumes/PI2CLUSTER/"
+#   end
+# end
 
 
 namespace :sd do
@@ -57,19 +57,19 @@ namespace :sd do
   end
 
   desc "Remove setup files and other cruft from SD card."
-  task remove: [:ensure_ubuntu, :'sd:clean'] do
+  task remove: [:ensure_ubuntu, :clean] do
     rm_f FileList["#{DEST_DIR}/pi2cluster/**/*"]
   end
 
   desc "Copy setup files to boot volume of SD card."
-  task copy: [:ensure_ubuntu, :'sd:remove'] do
+  task copy: [:ensure_ubuntu, :remove] do
     sh "cp image/snappy-15.04/uEnv.txt #{DEST_DIR}/"
     mkdir_p "#{DEST_DIR}/pi2cluster"
     cp_r FileList["boot/*"], "#{DEST_DIR}/"
   end
 
   desc "Eject the SD card."
-  task eject: [:ensure_ubuntu, :'sd:clean'] do
+  task eject: [:ensure_ubuntu, :clean] do
     sh "diskutil eject #{DEST_DIR}"
   end
 
