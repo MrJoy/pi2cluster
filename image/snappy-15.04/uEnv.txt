@@ -12,7 +12,7 @@ mmcpart=1
 mmcrootfstype=ext4
 # TODO: Is this where we should put our cloud-init hooks? snappy_cmdline is run before this...
 # https://help.ubuntu.com/community/UEC/Images/KVMKernelOptions
-mmcargs=setenv bootargs "console=tty0 console=ttyAMA0 root=${mmcroot} ds=nocloud;h=pi2g01u01 ubuntu-pass=ubuntu"
+mmcargs=setenv bootargs "console=tty0 console=ttyAMA0 root=${mmcroot} ds=nocloud;h=pi2g01u01;i=pi2g01u01 ubuntu-pass=ubuntu"
 
 
 # load Snappy environment and call into Snappy boot after processing this file
