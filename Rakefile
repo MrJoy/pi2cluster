@@ -1,16 +1,15 @@
-task :ensure_bare do
-  next if Dir.exist?("/Volumes/PI2CLUSTER")
-  fail "SD card must be set up and mounted properly."\
-    "  Expected to find `/Volumes/PI2CLUSTER`."
-end
+# task :ensure_bare do
+#   next if Dir.exist?("/Volumes/PI2CLUSTER")
+#   fail "SD card must be set up and mounted properly."\
+#     "  Expected to find `/Volumes/PI2CLUSTER`."
+# end
 
-task :ensure_raspbian do
-  DEST_DIR="/Volumes/boot"
-  next if Dir.exist?(DEST_DIR)
-  fail "SD card must be set up and mounted properly."\
-    "  Expected to find `#{DEST_DIR}`."
-
-end
+# task :ensure_raspbian do
+#   DEST_DIR="/Volumes/boot"
+#   next if Dir.exist?(DEST_DIR)
+#   fail "SD card must be set up and mounted properly."\
+#     "  Expected to find `#{DEST_DIR}`."
+# end
 
 task :ensure_ubuntu do
   DEST_DIR="/Volumes/system-boot"
