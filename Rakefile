@@ -28,13 +28,13 @@ namespace :ubuntu do
   task :init do
     device = ENV.fetch("DEVICE")
     ASSET_DIR = "image/snappy-15.04"
-    begin
+    # begin
       sh "time sudo dd if=#{ASSET_DIR}/ubuntu-15.04-snappy-armhf-raspi2.img of=#{device} bs=#{COPY_SIZE}"
-    rescue StandardError
-      # dd returns a non-zero status code after giving a message like the one that follows!  Despite
-      # this, all seems to work fine.  Ew!
-      #   dd: /dev/rdisk4: Invalid argument
-    end
+    # rescue StandardError
+    #   # dd returns a non-zero status code after giving a message like the one that follows!  Despite
+    #   # this, all seems to work fine.  Ew!
+    #   #   dd: /dev/rdisk4: Invalid argument
+    # end
     sleep 10
   end
 end
