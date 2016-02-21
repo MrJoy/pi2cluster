@@ -1,9 +1,13 @@
-# Based on file included with NOOBS 1.4.1
-kernel=uboot.bin
-
 # For more options and information see
 # http://www.raspberrypi.org/documentation/configuration/config-txt.md
 # Some settings may impact device functionality. See link above for details
+
+kernel=uboot.bin
+
+# enable i2c
+dtparam=i2c_arm=on
+dtparam=spi=on
+#dtparam=i2s=on
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
@@ -44,16 +48,6 @@ config_hdmi_boost=4
 
 #uncomment to overclock the arm. 700 MHz is the default.
 #arm_freq=1000
-
-# Uncomment some or all of these to enable the optional hardware interfaces
-dtparam=i2c_arm=off
-dtparam=i2s=off
-dtparam=spi=off
-
-# Uncomment this to enable the lirc-rpi module
-#dtoverlay=lirc-rpi
-
-# Additional overlays and parameters are documented /boot/overlays/README
 
 # Reduce GPU memory as much as possible to make it available to the rest of the
 # system.
