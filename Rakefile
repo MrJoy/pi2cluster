@@ -1,3 +1,15 @@
+def device(fallback)
+  disk_info = JSON.load(`diskutil list -plist | plutil -convert json -r - -o -`)
+
+  device    = disk_info["AllDisksAndPartitions"]
+              .select { |disk| disk["Content"] == "FDisk_partition_scheme" }
+              .select { |disk| disk["Partitions"] .find { |part| part["Content"] == "Windows_FAT_32"} }
+              .first["DeviceIdentifier"]
+  device    = fallback unless device =~ /\Adisk\d+\z/
+  fail "Couldn't find mounted MMC device!" unless device
+  return "/dev/r#{device}"
+end
+
 # task :ensure_bare do
 #   next if Dir.exist?("/Volumes/PI2CLUSTER")
 #   fail "SD card must be set up and mounted properly."\
