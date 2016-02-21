@@ -56,7 +56,6 @@ namespace :sd do
 
   desc "Copy setup files to boot volume of SD card."
   task copy: [:ensure_device, :remove] do
-    sh "cp #{ASSET_DIR}/uEnv.txt #{DEST_DIR}/"
     mkdir_p "#{DEST_DIR}/pi2cluster"
     cp_r FileList["boot/*"], "#{DEST_DIR}/"
   end

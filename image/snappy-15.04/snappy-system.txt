@@ -13,7 +13,6 @@ initrd_file=initrd.img
 fdtfile=bcm2836-rpi-2-b.dtb
 
 # extra kernel cmdline args, set via mmcroot
-# TODO: Is this where we should put our cloud-init hooks? mmcargs is run after this...
 snappy_cmdline=init=/lib/systemd/systemd ro panic=-1 fixrtc
 
 # boot logic
