@@ -1,40 +1,43 @@
-COPY_SIZE       = "16m"
+# Adding New Platforms:
+# 1. Update `README.md` with download URL, destination in `images/`, login info, etc.
+# 2. Set up assets under `boot/`.  Currently `common/bin/setup.sh` assumes systemd and I'm punting
+#    on that for now!
+# 3. Add the FAT32 volume name for the new image to `POSSIBLE_MOUNTS`.
+# 4. Add an appropriate `<os>:init` task, based on the ones below.
+
+COPY_SIZE       = "16m".freeze
 POSSIBLE_MOUNTS = ["/Volumes/system-boot",
                    "/Volumes/boot",
                    "/Volumes/EXTRASPACE",
-                   "/Volumes/PI2CLUSTER"]
+                   "/Volumes/PI2CLUSTER",
+                   "/Volumes/HypriotOS"].freeze
+CONFIG          = Hash.new { |_hsh, key| raise "Couldn't find `#{key}` in CONFIG!" }
 
-# def device(fallback)
-#   disk_info = JSON.load(`diskutil list -plist | plutil -convert json -r - -o -`)
-
-#   device    = disk_info["AllDisksAndPartitions"]
-#               .select { |disk| disk["Content"] == "FDisk_partition_scheme" }
-#               .select { |disk| disk["Partitions"] .find { |part| part["Content"] == "Windows_FAT_32"} }
-#               .first["DeviceIdentifier"]
-#   device    = fallback unless device =~ /\Adisk\d+\z/
-#   fail "Couldn't find mounted MMC device!" unless device
-#   return "/dev/r#{device}"
-# end
+def device; CONFIG[:device] ||= ENV.fetch("DEVICE"); end
 
 task :ensure_device do
   mount_point = POSSIBLE_MOUNTS.find { |name| Dir.exist?(name) }
-  fail "SD card must be set up and mounted properly." \
-    "  Expected to find something from POSSIBLE_MOUNTS list." unless mount_point
-  DEST_DIR=mount_point
+  raise "SD card must be set up and mounted properly." \
+        "  Expected to find something from POSSIBLE_MOUNTS list." unless mount_point
+  CONFIG[:destination] = mount_point
 end
 
 namespace :ubuntu do
   desc "Write the Snappy Core Ubuntu image to DEVICE (/dev/rdiskX).  Requires `sudo`!"
   task :init do
-    device = ENV.fetch("DEVICE")
-    ASSET_DIR = "image/snappy-15.04"
-    # begin
-      sh "time sudo dd if=#{ASSET_DIR}/ubuntu-15.04-snappy-armhf-raspi2.img of=#{device} bs=#{COPY_SIZE}"
-    # rescue StandardError
-    #   # dd returns a non-zero status code after giving a message like the one that follows!  Despite
-    #   # this, all seems to work fine.  Ew!
-    #   #   dd: /dev/rdisk4: Invalid argument
-    # end
+    CONFIG[:platform]         = "snappy-15.04"
+    CONFIG[:image]            = "image/snappy-15.04/ubuntu-15.04-snappy-armhf-raspi2.img"
+    sh "time sudo dd if=#{CONFIG[:image]} of=#{device} bs=#{COPY_SIZE}"
+    sleep 10
+  end
+end
+
+namespace :hypriotos do
+  desc "Write the HypriotOS image to DEVICE (/dev/rdiskX).  Requires `sudo`!"
+  task :init do
+    CONFIG[:platform]         = "hypriotos-0.8.0"
+    CONFIG[:image]            = "image/hypriotos-0.8.0/hypriotos-rpi-v0.8.0.img"
+    sh "time sudo dd if=#{CONFIG[:image]} of=#{device} bs=#{COPY_SIZE}"
     sleep 10
   end
 end
@@ -42,31 +45,39 @@ end
 namespace :sd do
   desc "Remove cruft from SD card."
   task clean: [:ensure_device] do
-    sh "mdutil -i off #{DEST_DIR}"
-    rm_f FileList["#{DEST_DIR}/.fseventsd"]
-    rm_f FileList["#{DEST_DIR}/.Spotlight*"]
-    rm_f FileList["#{DEST_DIR}/.Trash"]
-    rm_f FileList["#{DEST_DIR}/._.Trash"]
+    sh "mdutil -i off #{CONFIG[:destination]}"
+    rm_f FileList["#{CONFIG[:destination]}/.fseventsd"]
+    rm_f FileList["#{CONFIG[:destination]}/.Spotlight*"]
+    rm_f FileList["#{CONFIG[:destination]}/.Trash"]
+    rm_f FileList["#{CONFIG[:destination]}/._.Trash"]
   end
 
   desc "Remove setup files and other cruft from SD card."
   task remove: [:ensure_device] do
-    rm_f FileList["#{DEST_DIR}/pi2cluster/**/*"]
+    rm_f FileList["#{CONFIG[:destination]}/pi2cluster/**/*"]
   end
 
   desc "Copy setup files to boot volume of SD card."
   task copy: [:ensure_device, :remove] do
-    mkdir_p "#{DEST_DIR}/pi2cluster"
-    cp_r FileList["boot/*"], "#{DEST_DIR}/"
+    target = "#{CONFIG[:destination]}/pi2cluster"
+    if Dir.exist?(target)
+      CONFIG[:platform] = File.read("#{target}/.platform").strip
+    else
+      mkdir_p target
+    end
+    sh "rsync -av boot/common/ #{target}/"
+    sh "rsync -av boot/#{CONFIG[:platform]}/ #{target}/"
+    File.write("#{target}/.platform", CONFIG[:platform])
   end
 
   desc "Eject the SD card."
   task eject: [:ensure_device, :clean] do
-    sh "diskutil eject #{DEST_DIR}"
+    sh "diskutil eject #{CONFIG[:destination]}"
   end
 
   desc "Unmount, but do not eject, the SD card specified by DEVICE (/dev/rdiskX)."
   task :unmount do
-    sh "diskutil unmountDisk #{ENV.fetch("DEVICE")}"
+    CONFIG[:device] = ENV.fetch("DEVICE")
+    sh "diskutil unmountDisk #{CONFIG[:device]}"
   end
 end

@@ -28,13 +28,13 @@ fi
 # TODO: Maybe ping the network to ensure this is unique?
 #
 # TODO: What's the graceful/proper way to set the damn hostname?
-GROUP=$(printf "%02d" $GROUP)
-UNIT=$(printf "%02d" $UNIT)
+GROUP=$(printf "%02d" "$GROUP")
+UNIT=$(printf "%02d" "$UNIT")
 NEW_HOSTNAME="pi2g${GROUP}u${UNIT}.local"
 echo "INFO: Setting hostname to '${NEW_HOSTNAME}'."
-cat /etc/hosts | perl -pse "s/^(127\.0\.0\.1\s+)(.*?)$/\1${NEW_HOSTNAME}\t\2/sm" > /tmp/hosts
+perl -pse "s/^(127\.0\.0\.1\s+)(.*?)$/\1${NEW_HOSTNAME}\t\2/sm" < /etc/hosts > /tmp/hosts
 sudo sh -c "cat /tmp/hosts > /etc/hosts"
-sudo hostname ${NEW_HOSTNAME}
+sudo hostname "${NEW_HOSTNAME}"
 
 
 # TODO: Don't format if it's already formatted.
@@ -43,7 +43,7 @@ MOUNT_DEVICE=/dev/sda1
 MOUNT_TARGET=/mnt/external/
 echo "INFO: Setting up ${MOUNT_DEVICE} with an ext4 volume, and mounting it to ${MOUNT_TARGET}"
 if [ ! -e /etc/systemd/system/mnt-external.mount ]; then
-  sudo cp -f $BASE_DIR/config/snappy-15.04/mnt-external.mount /etc/systemd/system/mnt-external.mount
+  sudo cp -f "$BASE_DIR/config/mnt-external.mount" /etc/systemd/system/mnt-external.mount
   sudo chmod 644 /etc/systemd/system/mnt-external.mount
   sudo systemctl enable mnt-external.mount
   sudo systemctl daemon-reload
@@ -60,7 +60,7 @@ echo "INFO: Ensuring SSH configuration is reasonable and has only the key includ
 AK_FILE=~/.ssh/authorized_keys
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
-cp -f $BASE_DIR/config/authorized_keys $AK_FILE
+cp -f "$BASE_DIR/config/authorized_keys" $AK_FILE
 chmod 600 $AK_FILE
 cat /etc/ssh/sshd_config |
   perl -pse 's/(#\s*)?(PermitRootLogin)(.*?)$/\2 no/' |
@@ -69,29 +69,9 @@ cat /etc/ssh/sshd_config |
   perl -pse 's/(#\s*)?(PubkeyAuthentication)(.*?)$/\2 yes/' > /tmp/sshd_config
 sudo sh -c "cat /tmp/sshd_config > /etc/ssh/sshd_config"
 
-
-echo "INFO: Ensuring sshd configuration is robust."
-# sudo cp -f $BASE_DIR/config/raspbian/sshd_config /etc/ssh/sshd_config
-# TODO: rm /etc/ssh/ssh_host_* && dpkg-reconfigure openssh-server
-
-
-echo "INFO: Coercing password for pi user to predetermined value."
-# TODO: Filter/replace for just `pi` user.
-#
-# TODO: Perhaps just set up a random string?
-# sudo cp -f $BASE_DIR/config/raspbian/{group,gshadow,passwd,shadow} /etc/
-# sudo chmod 600 /etc/{gshadow,shadow}
-# sudo chmod 644 /etc/{group,passwd}
-
-
 echo "INFO: Signaling sshd to pick up changes."
 sudo pkill --signal HUP sshd
 
-# TODO: Set up locale/keyboard, time zone, etc.
-echo "INFO: Updating OS, adding/removing packages."
-sudo snappy update ubuntu-core pi2
-for PACKAGE in docker; do
-  sudo snappy install $PACKAGE
-done
-sudo snappy remove webdm
-sudo snappy purge webdm
+if [ -e "$BASE_DIR/bin/post.sh" ]; then
+  "$BASE_DIR/bin/post.sh"
+fi
