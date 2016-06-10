@@ -1,4 +1,30 @@
-
 hdmi_force_hotplug=1
 enable_uart=1
 
+# uncomment this if your display has a black border of unused pixels visible
+# and your display can output without overscan
+#disable_overscan=1
+
+# uncomment the following to adjust overscan. Use positive numbers if console
+# goes off screen, and negative if there is too much border
+#overscan_left=24
+#overscan_right=24
+#overscan_top=16
+#overscan_bottom=16
+
+# uncomment to force a console size. By default it will be display's size minus
+# overscan.
+#framebuffer_width=1920
+#framebuffer_height=1080
+
+# uncomment to force a specific HDMI mode
+#hdmi_group=2
+#hdmi_mode=82
+
+# Provide enough power for bus-powered USB spindles.
+max_usb_current=1
+
+# DISABLE THE FOLLOWING FOR DEBUGGING:
+boot_delay=0
+avoid_safe_mode=1
+disable_splash=1
