@@ -1,0 +1,4 @@
+
+hdmi_force_hotplug=1
+enable_uart=1
+
