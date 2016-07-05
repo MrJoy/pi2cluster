@@ -72,13 +72,29 @@ namespace :sd do
 
   desc "Eject the SD card."
   task eject: [:ensure_device, :clean] do
-    sh "diskutil eject #{CONFIG[:destination]}"
+    attempts = 1
+    begin
+      sh "diskutil eject #{CONFIG[:destination]}"
+    rescue StandardError => se
+      raise se if attempts >= 3
+      sleep 1.5**attempts
+      attempts += 1
+      retry
+    end
   end
 
   desc "Unmount, but do not eject, the SD card specified by DEVICE (/dev/rdiskX)."
   task :unmount do
     # TODO: Ensure it's not already unmounted!
     CONFIG[:device] = ENV.fetch("DEVICE")
-    sh "diskutil unmountDisk #{CONFIG[:device]}"
+    attempts = 1
+    begin
+      sh "diskutil unmountDisk #{CONFIG[:device]}"
+    rescue StandardError => se
+      raise se if attempts >= 3
+      sleep 1.5**attempts
+      attempts += 1
+      retry
+    end
   end
 end
