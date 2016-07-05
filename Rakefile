@@ -28,7 +28,7 @@ namespace :ubuntu do
     CONFIG[:platform]         = "snappy-15.04"
     CONFIG[:image]            = "image/snappy-15.04/ubuntu-15.04-snappy-armhf-raspi2.img"
     sh "time sudo dd if=#{CONFIG[:image]} of=#{device} bs=#{COPY_SIZE}"
-    sleep 10
+    sleep 10 # TODO: Wait for mount in a more intelligent way!
   end
 end
 
@@ -38,7 +38,7 @@ namespace :hypriotos do
     CONFIG[:platform]         = "hypriotos-0.8.0"
     CONFIG[:image]            = "image/hypriotos-0.8.0/hypriotos-rpi-v0.8.0.img"
     sh "time sudo dd if=#{CONFIG[:image]} of=#{device} bs=#{COPY_SIZE}"
-    sleep 10
+    sleep 10 # TODO: Wait for mount in a more intelligent way!
   end
 end
 
@@ -77,6 +77,7 @@ namespace :sd do
 
   desc "Unmount, but do not eject, the SD card specified by DEVICE (/dev/rdiskX)."
   task :unmount do
+    # TODO: Ensure it's not already unmounted!
     CONFIG[:device] = ENV.fetch("DEVICE")
     sh "diskutil unmountDisk #{CONFIG[:device]}"
   end
