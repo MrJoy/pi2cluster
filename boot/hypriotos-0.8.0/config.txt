@@ -22,9 +22,9 @@ enable_uart=1
 #hdmi_mode=82
 
 # Provide enough power for bus-powered USB spindles.
-#max_usb_current=1
+max_usb_current=1
 
 # DISABLE THE FOLLOWING FOR DEBUGGING:
-#boot_delay=0
-#avoid_safe_mode=1
-#disable_splash=1
+boot_delay=0
+avoid_safe_mode=1
+disable_splash=1
