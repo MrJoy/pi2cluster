@@ -29,10 +29,10 @@ Over time this will expand and generalize to support other devices, other OSs, a
 # WARNING: throughput here.
 #
 # Also note that you'll be prompted for your password as `sudo` is used here!
-time rake sd:unmount hypriotos:init sd:copy sd:eject DEVICE=/dev/rdisk4; say 'Done!'
+time rake sd:unmount hypriotos:init sd:clean sd:copy sd:eject DEVICE=/dev/rdisk4 NODE=1; say 'Done!'
 
 # If you're iterating on the setup scripts / boot process and you have an imaged MMC card at hand:
-rake sd:copy sd:eject DEVICE=/dev/rdisk4
+rake sd:clean sd:copy sd:eject DEVICE=/dev/rdisk4 NODE=1
 ```
 
 Default users:
@@ -47,11 +47,11 @@ Then, boot up a Pi with the relevant MMC card, log in, and run the following:
 ```bash
 # The following will attempt to mount `/dev/sda1` as an `ext4` volume.  If it
 # cannot mount it, it will attempt to format the drive!
-/boot/uboot/pi2cluster/bin/setup.sh <group> <unit>
+/boot/pi2cluster/bin/setup.sh
 sudo reboot now
 ```
 
-You should be able to reach the host at: `pi2g<group>u<unit>.local` (0-padding each value to 2 digits!), e.g. `pi2g01u01.local` once it reboots.
+You should be able to reach the host at: `pi2-n<node>.local` (0-padding node to 2 digits!), e.g. `pi2-n01.local` once it reboots.
 
 You should also be able to SSH in without a password (just with your SSH key and passphrase) as `ubuntu`, and have password-less `sudo` access.
 
