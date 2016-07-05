@@ -7,34 +7,31 @@ BASE_DIR=$(
   /bin/pwd
 )
 
-# TODO: Make sure current user is `pi`.  Or maybe require this run as root to
-# TODO: avoid the need for sudo and the awkwardness that imposes wrt I/O
-# TODO: redirections?
-
 # TODO: This whole process is sloppy as hell and dangerous if there's a way for
 # TODO: anyone to get onto the box while it's running.  We should turn `sshd`
 # TODO: off at startup as a *minimum*.
 
-GROUP=${1:-}
-UNIT=${2:-}
-ERROR=0
-if [ "$GROUP" == "" ]; then ERROR=1; fi
-if [ "$UNIT" == "" ]; then ERROR=1; fi
-if [ "$ERROR" == "1" ]; then
-  echo "USAGE: setup.sh <group number> <unit number>"
-  exit 1
-fi
+# TODO: Make this conditional to platforms where we need it (Snappy):
+# GROUP=${1:-}
+# UNIT=${2:-}
+# ERROR=0
+# if [ "$GROUP" == "" ]; then ERROR=1; fi
+# if [ "$UNIT" == "" ]; then ERROR=1; fi
+# if [ "$ERROR" == "1" ]; then
+#   echo "USAGE: setup.sh <group number> <unit number>"
+#   exit 1
+# fi
 
-# TODO: Maybe ping the network to ensure this is unique?
-#
-# TODO: What's the graceful/proper way to set the damn hostname?
-GROUP=$(printf "%02d" "$GROUP")
-UNIT=$(printf "%02d" "$UNIT")
-NEW_HOSTNAME="pi2g${GROUP}u${UNIT}.local"
-echo "INFO: Setting hostname to '${NEW_HOSTNAME}'."
-perl -pse "s/^(127\.0\.0\.1\s+)(.*?)$/\1${NEW_HOSTNAME}\t\2/sm" < /etc/hosts > /tmp/hosts
-sudo sh -c "cat /tmp/hosts > /etc/hosts"
-sudo hostname "${NEW_HOSTNAME}"
+# # TODO: Maybe ping the network to ensure this is unique?
+# #
+# # TODO: What's the graceful/proper way to set the damn hostname?
+# GROUP=$(printf "%02d" "$GROUP")
+# UNIT=$(printf "%02d" "$UNIT")
+# NEW_HOSTNAME="pi2g${GROUP}u${UNIT}.local"
+# echo "INFO: Setting hostname to '${NEW_HOSTNAME}'."
+# perl -pse "s/^(127\.0\.0\.1\s+)(.*?)$/\1${NEW_HOSTNAME}\t\2/sm" < /etc/hosts > /tmp/hosts
+# sudo sh -c "cat /tmp/hosts > /etc/hosts"
+# sudo hostname "${NEW_HOSTNAME}"
 
 
 # TODO: Don't format if it's already formatted.
