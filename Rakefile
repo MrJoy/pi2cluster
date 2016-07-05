@@ -59,15 +59,28 @@ namespace :sd do
 
   desc "Copy setup files to boot volume of SD card."
   task copy: [:ensure_device, :remove] do
-    target = "#{CONFIG[:destination]}/pi2cluster"
-    if Dir.exist?(target)
+    node = ENV.fetch("NODE") # Used by templates!
+    require "erb"
+
+    target = CONFIG[:destination]
+    if File.exist?("#{target}/.platform")
       CONFIG[:platform] = File.read("#{target}/.platform").strip
-    else
-      mkdir_p target
     end
-    sh "rsync -av boot/common/ #{target}/"
-    sh "rsync -av boot/#{CONFIG[:platform]}/ #{target}/"
     File.write("#{target}/.platform", CONFIG[:platform])
+
+    templates = FileList["boot/#{CONFIG[:platform]}/**/*.erb"] +
+                FileList["boot/#{CONFIG[:platform]}/*.erb"]
+    templates.each do |fname|
+      tmp           = fname.sub(%r{\A.*?boot/#{CONFIG[:platform]}/}, "").sub(/\.erb\z/, "")
+      output_fname  = "#{target}/#{tmp}"
+      contents      = ERB.new(File.read(fname)).result(binding)
+      puts "#{fname} >>>> #{output_fname}"
+      File.write(output_fname, contents)
+    end
+
+    # TODO: Exclude ERB templates!
+    sh "rsync -av --omit-dir-times boot/common/ #{target}/"
+    sh "rsync -av --omit-dir-times boot/#{CONFIG[:platform]}/ #{target}/"
   end
 
   desc "Eject the SD card."
