@@ -16,3 +16,7 @@
     # Or: hypriot/rpi-dockerui, but that's a bit behind last I checked:
     docker run --name=docker_ui -d -p 9000:9000 mrjoy/rpi-ui-for-docker:v0.11.0-beta -e http://$(ip addr list | grep eth0 | grep inet | grep eth0.200 | awk '{ print $2 }' | cut -d/ -f1):2378
     ```
+* Script power management:
+    ```bash
+    curl --cookie AIROS_SESSIONID=<cookie> http://utopiaplanitia.local/sensors | jsonpp
+    ```
