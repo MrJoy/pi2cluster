@@ -1,4 +1,5 @@
 #!/bin/bash
 # TODO: https://github.com/hypriot/flash
+# TODO: https://github.com/hypriot/device-init
 curl https://raw.githubusercontent.com/hypriot/flash/master/$(uname -s)/flash > bin/flash.$(uname -s)
 brew install pv
