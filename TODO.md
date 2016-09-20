@@ -23,6 +23,7 @@
     # Hypriot 1.0.0, service is bound to the node and data is stored on external drive so you need to do this by hand from the relevant node:
     sudo mkdir /mnt/external/mysql_shared
     docker service create --constraint=node.id==$(docker node ls | fgrep '*' | cut -d' ' -f1) --restart-condition=on-failure --mount=type=bind,source=/mnt/external/mysql_shared,target=/var/lib/mysql --name=mysql_shared --publish=3306:3306 --env=MYSQL_ROOT_PASSWORD=ddkjhkjh23he2hd289hd hypriot/rpi-mysql:5.5
+    # We might want to set the user to `pirate`, or something, as the user ID in use by default seems to be 999.
 
 
     # MySQL CLI:
