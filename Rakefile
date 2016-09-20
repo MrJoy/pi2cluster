@@ -33,12 +33,24 @@ namespace :ubuntu do
 end
 
 namespace :hypriotos do
-  desc "Write the HypriotOS image to DEVICE (/dev/rdiskX).  Requires `sudo`!"
-  task :init do
-    CONFIG[:platform]         = "hypriotos-0.8.0"
-    CONFIG[:image]            = "image/hypriotos-0.8.0/hypriotos-rpi-v0.8.0.img"
-    sh "time sudo dd if=#{CONFIG[:image]} of=#{device} bs=#{COPY_SIZE}"
-    sleep 10 # TODO: Wait for mount in a more intelligent way!
+  namespace :'0.8' do
+    desc "Write the HypriotOS image to DEVICE (/dev/rdiskX).  Requires `sudo`!"
+    task :init do
+      CONFIG[:platform]         = "hypriotos-0.8.0"
+      CONFIG[:image]            = "image/hypriotos-0.8.0/hypriotos-rpi-v0.8.0.img"
+      sh "time sudo dd if=#{CONFIG[:image]} of=#{device} bs=#{COPY_SIZE}"
+      sleep 10 # TODO: Wait for mount in a more intelligent way!
+    end
+  end
+
+  namespace :'1.0' do
+    desc "Write the HypriotOS image to DEVICE (/dev/rdiskX).  Requires `sudo`!"
+    task :init do
+      CONFIG[:platform]         = "hypriotos-1.0.0"
+      CONFIG[:image]            = "image/hypriotos-1.0.0/hypriotos-rpi-v1.0.0.img"
+      sh "time sudo dd if=#{CONFIG[:image]} of=#{device} bs=#{COPY_SIZE}"
+      sleep 10 # TODO: Wait for mount in a more intelligent way!
+    end
   end
 end
 

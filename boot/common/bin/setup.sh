@@ -33,12 +33,14 @@ BASE_DIR=$(
 # sudo sh -c "cat /tmp/hosts > /etc/hosts"
 # sudo hostname "${NEW_HOSTNAME}"
 
+echo "INFO: Cleaning up crud left by macOS."
+rm -rf /boot/.Trashes/ /boot/._.Trashes /boot/.DS_Store /boot/.fseventsd/
 
 # TODO: Don't format if it's already formatted.
 # TODO: Template the service file so this stays in sync...
 MOUNT_DEVICE=/dev/sda1
 MOUNT_TARGET=/mnt/external/
-echo "INFO: Setting up ${MOUNT_DEVICE} with an ext4 volume, and mounting it to ${MOUNT_TARGET}"
+echo "INFO: Setting up ${MOUNT_DEVICE} with an ext4 volume, and mounting it to ${MOUNT_TARGET}."
 if [ ! -e /etc/systemd/system/mnt-external.mount ]; then
   sudo cp -f "$BASE_DIR/config/mnt-external.mount" /etc/systemd/system/mnt-external.mount
   sudo chmod 644 /etc/systemd/system/mnt-external.mount
@@ -50,7 +52,7 @@ if ! sudo systemctl start mnt-external.mount; then
   sudo mkfs.ext4 $MOUNT_DEVICE
   sudo systemctl start mnt-external.mount
 else
-  echo "INFO: Looks like ${MOUNT_TARGET} already set up.  Assuming setup went well and skipping FS setup."
+  echo "INFO: Looks like ${MOUNT_TARGET} already formatted.  Assuming setup went well and skipping FS setup."
 fi
 
 echo "INFO: Ensuring SSH configuration is reasonable and has only the key included with us."

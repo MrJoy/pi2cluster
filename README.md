@@ -14,6 +14,7 @@ Over time this will expand and generalize to support other devices, other OSs, a
 ## Setup
 
 1. Download the [HypriotOS 0.8.0 image](https://downloads.hypriot.com/hypriotos-rpi-v0.8.0.img.zip), unzip it, and put it into `image/hypriotos-0.8.0`.
+1. Download the [HypriotOS 1.0.0 image](https://downloads.hypriot.com/hypriotos-rpi-v1.0.0.img.zip), unzip it, and put it into `image/hypriotos-1.0.0`.
 1. Download the [Snappy Core Ubuntu 15.04 image](http://people.canonical.com/~platform/snappy/raspberrypi2/ubuntu-15.04-snappy-armhf-rpi2.img.xz) for Raspberry Pi, run it through `unxz`, and put it into `image/snappy-15.04`.
     * `brew install unxz`
 2. Edit `boot/common/config/authorized_keys` to have your preferred SSH public key.
@@ -29,7 +30,7 @@ Over time this will expand and generalize to support other devices, other OSs, a
 # WARNING: throughput here.
 #
 # Also note that you'll be prompted for your password as `sudo` is used here!
-time rake sd:unmount hypriotos:init sd:clean sd:copy sd:eject DEVICE=/dev/rdisk4 NODE=1; say 'Done!'
+time rake sd:unmount hypriotos:1.0:init sd:clean sd:copy sd:eject DEVICE=/dev/rdisk4 NODE=1; say 'Done!'
 
 # If you're iterating on the setup scripts / boot process and you have an imaged MMC card at hand:
 rake sd:clean sd:copy sd:eject DEVICE=/dev/rdisk4 NODE=1
@@ -47,12 +48,11 @@ Then, boot up a Pi with the relevant MMC card, log in, and run the following:
 ```bash
 # The following will attempt to mount `/dev/sda1` as an `ext4` volume.  If it
 # cannot mount it, it will attempt to format the drive!
-/boot/pi2cluster/bin/setup.sh
-sudo reboot now
+/boot/bin/setup.sh
 ```
 
 You should be able to reach the host at: `pi2-n<node>.local` (0-padding node to 2 digits!), e.g. `pi2-n01.local` once it reboots.
 
-You should also be able to SSH in without a password (just with your SSH key and passphrase) as `ubuntu`, and have password-less `sudo` access.
+You should also be able to SSH in without a password (just with your SSH key and passphrase) as `ubuntu`/`hypriot`, and have password-less `sudo` access.
 
 Automate away from here.
