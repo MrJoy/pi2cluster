@@ -39,3 +39,12 @@
     * https://hub.docker.com/r/hypriot/rpi-ruby/
     * https://hub.docker.com/r/hypriot/rpi-gogs-raspbian/
     * https://hub.docker.com/r/hypriot/rpi-gogs-alpine/
+* Benchmarking:
+    ```bash
+    apt-get update && apt-get install -y sysbench linux-cpupower
+
+    cpupower frequency-set -f 900000 # CPU speed isn't auto-scaling properly!
+    sysbench --num-threads=8 --test=cpu --cpu-max-prime=10000000000 run
+    while [ 1 ]; do clear; uptime; sudo cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq; sleep 2; done
+    while true; do vcgencmd measure_temp && vcgencmd measure_clock arm; sleep 1; done
+    ```

@@ -4,10 +4,13 @@
 #Simple stress test for system. If it survives this, it's probably stable.
 #Free software, GPL2+
 
+# Note: Needs to be run as root due to use of `--adjustment` on `nice` below.  Not using that seems
+# to result in the process not taking much time at all.
+
 echo "Testing overclock stability..."
 
 #Max out the CPU in the background (one core). Heats it up, loads the power-supply.
-nice yes >/dev/null &
+nice --adjustment=-20 yes >/dev/null & &
 
 #Read the entire SD card 10x. Tests RAM and I/O
 for i in `seq 1 10`; do echo reading: $i; sudo dd if=/dev/mmcblk0 of=/dev/null bs=4M; done
