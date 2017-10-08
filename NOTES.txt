@@ -1,5 +1,7 @@
 diskutil list | grep _FAT_32 | awk '{ print $4 $5 " " $6 }'
 
+https://resinos.io/docs/raspberrypi2/gettingstarted/
+
 http://githubengineering.com/githubs-metal-cloud/
 http://ipxe.org
 https://en.wikipedia.org/wiki/Intelligent_Platform_Management_Interface
